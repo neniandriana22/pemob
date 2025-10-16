@@ -1,0 +1,48 @@
+name: profile_dosen_app
+description: "Profile Dosen"
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+# ... (bagian version dan environment tidak diubah)
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.9.2
+
+# ... (bagian dependencies dan dev_dependencies tidak diubah)
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # ... (lanjutan dev_dependencies)
+  flutter_lints: ^5.0.0
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter packages.
+flutter:
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    # --- TEMPAT PENYISIPAN DIMULAI ---
+    # Pastikan indentasinya tepat (dua spasi dari 'flutter:')
+    - assets/images/
+    # --- TEMPAT PENYISIPAN SELESAI ---
+
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/to/resolution-aware-images
+
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.dev/to/asset-from-package
+
+  # To add custom fonts to your application, add a fonts section here,
+# ... (lanjutan pubspec.yaml)
