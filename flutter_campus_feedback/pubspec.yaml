@@ -1,0 +1,41 @@
+name: flutter_campus_feedback
+description: "Flutter Cmpus Feedback"
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+# ... (Baris version dan environment tetap sama)
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.8
+
+  # ⭐️ TAMBAHAN UNTUK FIX ERROR SHARED PREFERENCES
+  shared_preferences: ^2.2.0
+
+dev_dependencies:
+# ... (Baris dev_dependencies tetap sama)
+
+# ... (Baris komentar tetap sama)
+
+# The following section is specific to Flutter packages.
+flutter:
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  # ⭐️ TAMBAHAN UNTUK MEMUAT FILE GAMBAR (ASSETS)
+  assets:
+    - assets/logo_uin.png # Pastikan path ini benar sesuai struktur projectmu
+    - assets/logo_flutter.png # Pastikan path ini benar sesuai struktur projectmu
+
+# ... (Baris fonts tetap sama)
