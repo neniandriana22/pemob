@@ -24,125 +24,166 @@ Route createRoute(Widget page) {
         ),
       );
     },
-    transitionDuration: const Duration(milliseconds: 600),
+    transitionDuration: const Duration(milliseconds: 400), // Transisi lebih cepat
   );
 }
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
+  // RAPIH: Widget untuk tombol disempurnakan agar lebih konsisten dan dapat digunakan kembali
   Widget _buildHomeButton(BuildContext context,
       {required IconData icon,
-        required String label,
-        required Widget page,
-        bool isPrimary = true}) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      required String label,
+      required Widget page,
+      bool isPrimary = true}) {
+    // KONSISTEN: Style untuk tombol utama (ElevatedButton)
+    final elevatedStyle = ElevatedButton.styleFrom(
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+      textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 4,
+    );
+
+    // KONSISTEN: Style untuk tombol sekunder (OutlinedButton)
+    final outlinedStyle = OutlinedButton.styleFrom(
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+      textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      side: BorderSide(
+        color: Theme.of(context).colorScheme.primary, // Border yang lebih jelas
+        width: 1.5,
+      ),
+    );
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 12.0), // Jarak antar tombol
       child: isPrimary
           ? ElevatedButton.icon(
-        onPressed: () {
-          Navigator.of(context).push(createRoute(page));
-        },
-        icon: Icon(icon),
-        label: Text(label),
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          textStyle:
-          const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12)),
-          elevation: 4,
-        ),
-      )
+              onPressed: () {
+                Navigator.of(context).push(createRoute(page));
+              },
+              icon: Icon(icon, size: 20),
+              label: Text(label),
+              style: elevatedStyle,
+            )
           : OutlinedButton.icon(
-        onPressed: () {
-          Navigator.of(context).push(createRoute(page));
-        },
-        icon: Icon(icon),
-        label: Text(label),
-        style: OutlinedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          textStyle: const TextStyle(fontSize: 18),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12)),
-        ),
-      ),
+              onPressed: () {
+                Navigator.of(context).push(createRoute(page));
+              },
+              icon: Icon(icon, size: 20),
+              label: Text(label),
+              style: outlinedStyle,
+            ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final appBarHeight = AppBar().preferredSize.height;
+    final bodyMinHeight = screenHeight - appBarHeight - MediaQuery.of(context).padding.top;
 
     return Scaffold(
       appBar: AppBar(
-        // Judul AppBar terlihat jelas
-        title: const Text('Campus Feedback System'),
+        title: const Text('Campus Feedback'), // Judul lebih singkat
         backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         actions: [
-          // Tombol Toggle Dark Mode
-          IconButton(
-            icon: Icon(isDarkMode ? Icons.wb_sunny : Icons.mode_night),
-            onPressed: () {
-              MyApp.of(context).toggleTheme();
-            },
-            tooltip: 'Toggle Dark/Light Mode',
+          Tooltip(
+            message: 'Ganti Mode Gelap/Terang',
+            child: Switch(
+              value: isDarkMode,
+              onChanged: (value) {
+                MyApp.of(context).toggleTheme();
+              },
+              thumbIcon: MaterialStateProperty.resolveWith<Icon?>((states) {
+                return Icon(
+                    states.contains(MaterialState.selected) ? Icons.dark_mode : Icons.light_mode);
+              }),
+            ),
           ),
+          const SizedBox(width: 8),
         ],
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              // Logo UIN STS Jambi
-              Image.asset(
-                'assets/logo_flutter.png',
-                height: 100,
-              ),
-              const SizedBox(height: 16),
-              Text('Flutter Campus Feedback',
-                  style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                      fontWeight: FontWeight.w900,
-                      color: Theme.of(context).colorScheme.primary),
-                  textAlign: TextAlign.center),
-              const SizedBox(height: 8),
-              Text('Kuesioner Kepuasan Mahasiswa',
-                  style: Theme.of(context).textTheme.titleMedium,
-                  textAlign: TextAlign.center),
-              const SizedBox(height: 48),
-              _buildHomeButton(context,
-                  icon: Icons.rate_review,
-                  label: 'Isi Formulir Feedback Mahasiswa',
-                  page: const FeedbackFormPage()),
-              _buildHomeButton(context,
-                  icon: Icons.list_alt,
-                  label: 'Lihat Daftar Feedback',
-                  page: const FeedbackListPage()),
-              _buildHomeButton(context,
-                  icon: Icons.info_outline,
-                  label: 'Tentang Aplikasi / Profil',
-                  page: const AboutPage(),
-                  isPrimary: false),
-              const Spacer(),
-              Card(
-                elevation: 0,
-                color:
-                Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.5),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    "\"Coding adalah seni memecahkan masalah dengan logika dan kreativitas.\"",
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontStyle: FontStyle.italic,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant),
+      // PROFESIONAL: Layout dibuat responsif dengan SingleChildScrollView
+      body: SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: bodyMinHeight),
+          child: IntrinsicHeight(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  const Spacer(),
+                  // CANTIK: Tampilan logo lebih modern dengan CircleAvatar
+                  CircleAvatar(
+                    radius: 55,
+                    backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                    child: const CircleAvatar(
+                      radius: 50,
+                      backgroundImage: AssetImage('assets/logo_flutter.png'),
+                      backgroundColor: Colors.transparent,
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 24),
+                  Text(
+                    'Flutter Campus Feedback',
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.primary),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Kuesioner Kepuasan Mahasiswa',
+                    style: Theme.of(context).textTheme.titleMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 32),
+                  _buildHomeButton(
+                    context,
+                    icon: Icons.rate_review_outlined,
+                    label: 'Isi Formulir Feedback',
+                    page: const FeedbackFormPage(),
+                  ),
+                  _buildHomeButton(
+                    context,
+                    icon: Icons.list_alt_outlined,
+                    label: 'Lihat Daftar Feedback',
+                    page: const FeedbackListPage(),
+                  ),
+                  _buildHomeButton(
+                    context,
+                    icon: Icons.info_outline,
+                    label: 'Tentang Aplikasi',
+                    page: const AboutPage(),
+                    isPrimary: false,
+                  ),
+                  const Spacer(),
+                  const Spacer(), // Memberi lebih banyak ruang di tengah
+                  // RAPIH: Card untuk kutipan dengan style yang lebih halus
+                  Card(
+                    elevation: 0,
+                    color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.7),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        "\"Coding adalah seni memecahkan masalah dengan logika dan kreativitas.\"",
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontStyle: FontStyle.italic,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),

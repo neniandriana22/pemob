@@ -90,10 +90,10 @@ class _FeedbackListPageState extends State<FeedbackListPage> {
 
   Widget _buildFeedbackTile(BuildContext context, FeedbackItem item) {
     Color iconColor = item.jenisFeedback == JenisFeedback.keluhan
-        ? Colors.red.shade600
+        ? Colors.red.shade600 // Keluhan: Merah
         : item.jenisFeedback == JenisFeedback.apresiasi
-        ? Colors.green.shade600
-        : Colors.blue.shade600;
+            ? Colors.green.shade600 // Apresiasi: Hijau
+            : Colors.yellow.shade700; // Saran: Kuning
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -111,7 +111,8 @@ class _FeedbackListPageState extends State<FeedbackListPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Fakultas: ${item.fakultas}', overflow: TextOverflow.ellipsis),
-            Text('Jenis: ${item.jenisFeedbackString}', overflow: TextOverflow.ellipsis),
+            Text('Jenis: ${item.jenisFeedbackString}',
+                overflow: TextOverflow.ellipsis),
           ],
         ),
         trailing: Container(
@@ -131,9 +132,8 @@ class _FeedbackListPageState extends State<FeedbackListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // 🚨 PERBAIKAN KRITIS: Menggunakan FittedBox untuk mencegah teks judul terpotong
         title: const FittedBox(
-          fit: BoxFit.scaleDown, // Memastikan teks mengecil jika ruang sempit
+          fit: BoxFit.scaleDown,
           child: Text('Daftar Feedback Mahasiswa'),
         ),
         backgroundColor: Theme.of(context).colorScheme.primaryContainer,
@@ -154,31 +154,30 @@ class _FeedbackListPageState extends State<FeedbackListPage> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _feedbackList.isEmpty
-          ? Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.inbox, size: 80, color: Colors.grey),
-            const SizedBox(height: 16),
-            Text('Belum ada feedback yang masuk.',
-                style: Theme.of(context).textTheme.titleLarge),
-            Text('Data disimpan secara lokal.',
-                style: Theme.of(context).textTheme.bodyMedium),
-          ],
-        ),
-      )
-          : ListView.builder(
-        itemCount: _feedbackList.length,
-        itemBuilder: (context, index) {
-          final item = _feedbackList[index];
-          return _buildFeedbackTile(context, item);
-        },
-      ),
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.inbox, size: 80, color: Colors.grey),
+                      const SizedBox(height: 16),
+                      Text('Belum ada feedback yang masuk.',
+                          style: Theme.of(context).textTheme.titleLarge),
+                      Text('Data disimpan secara lokal.',
+                          style: Theme.of(context).textTheme.bodyMedium),
+                    ],
+                  ),
+                )
+              : ListView.builder(
+                  itemCount: _feedbackList.length,
+                  itemBuilder: (context, index) {
+                    final item = _feedbackList[index];
+                    return _buildFeedbackTile(context, item);
+                  },
+                ),
     );
   }
 }
 
-// FUNGSI BONUS: Implementasi SearchDelegate untuk Pencarian Feedback
 class FeedbackSearchDelegate extends SearchDelegate<String> {
   final List<FeedbackItem> initialList;
 
@@ -224,9 +223,9 @@ class FeedbackSearchDelegate extends SearchDelegate<String> {
   Widget buildResults(BuildContext context) {
     final results = initialList
         .where((item) =>
-    item.namaMahasiswa.toLowerCase().contains(query.toLowerCase()) ||
-        item.fakultas.toLowerCase().contains(query.toLowerCase()) ||
-        item.nim.contains(query))
+            item.namaMahasiswa.toLowerCase().contains(query.toLowerCase()) ||
+            item.fakultas.toLowerCase().contains(query.toLowerCase()) ||
+            item.nim.contains(query))
         .toList();
 
     return ListView.builder(
@@ -242,8 +241,8 @@ class FeedbackSearchDelegate extends SearchDelegate<String> {
   Widget buildSuggestions(BuildContext context) {
     final suggestionList = initialList
         .where((item) =>
-    item.namaMahasiswa.toLowerCase().contains(query.toLowerCase()) ||
-        item.fakultas.toLowerCase().contains(query.toLowerCase()))
+            item.namaMahasiswa.toLowerCase().contains(query.toLowerCase()) ||
+            item.fakultas.toLowerCase().contains(query.toLowerCase()))
         .toList();
 
     return ListView.builder(
@@ -268,12 +267,20 @@ class FeedbackSearchDelegate extends SearchDelegate<String> {
   }
 
   Widget _buildSearchListTile(BuildContext context, FeedbackItem item) {
+    // Konsistensi Warna Ikon di Hasil Pencarian
+    Color iconColor = item.jenisFeedback == JenisFeedback.keluhan
+        ? Colors.red.shade600
+        : item.jenisFeedback == JenisFeedback.apresiasi
+            ? Colors.green.shade600
+            : Colors.yellow.shade700;
+
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       elevation: 2,
       child: ListTile(
-        leading: Icon(item.iconData, color: Colors.blueGrey),
-        title: Text(item.namaMahasiswa,
+        leading: Icon(item.iconData, color: iconColor), // Menggunakan warna ikon yang konsisten
+        title: Text(
+          item.namaMahasiswa,
           style: const TextStyle(fontWeight: FontWeight.bold),
           overflow: TextOverflow.ellipsis,
         ),
